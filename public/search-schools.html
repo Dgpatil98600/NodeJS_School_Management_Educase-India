@@ -72,7 +72,7 @@
   </div>
 
   <script>
-    const API_URL = 'http://localhost:5000';
+    const API_URL = 'http://localhost:8000';
 
     function showAlert(type, message) {
       const alertId = type === 'error' ? 'errorAlert' : 'infoAlert';
@@ -155,7 +155,7 @@
           throw new Error(error.message);
         }
 
-        const schools = await response.json();Y
+        const schools = await response.json();
         showLoading(false);
 
         if (schools.length === 0) {

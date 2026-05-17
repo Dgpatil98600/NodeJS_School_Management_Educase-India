@@ -1,0 +1,250 @@
+{
+  "info": {
+    "_postman_id": "school-management-api",
+    "name": "School Management API",
+    "description": "Professional REST API for School Management System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Root",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": [""]
+        },
+        "description": "Get API information and available endpoints"
+      },
+      "response": []
+    },
+    {
+      "name": "Add School",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"ABC School\",\n  \"address\": \"Pune, Maharashtra\",\n  \"latitude\": 18.5204,\n  \"longitude\": 73.8567\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/addSchool",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["addSchool"]
+        },
+        "description": "Add a new school to the database"
+      },
+      "response": []
+    },
+    {
+      "name": "Add School - Example 2",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"XYZ School\",\n  \"address\": \"Mumbai, Maharashtra\",\n  \"latitude\": 19.0760,\n  \"longitude\": 72.8777\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/addSchool",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["addSchool"]
+        },
+        "description": "Add another school"
+      },
+      "response": []
+    },
+    {
+      "name": "Add School - Example 3",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Delhi Public School\",\n  \"address\": \"New Delhi\",\n  \"latitude\": 28.7041,\n  \"longitude\": 77.1025\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/addSchool",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["addSchool"]
+        },
+        "description": "Add a school in Delhi"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - From Pune",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/listSchools?latitude=18.5204&longitude=73.8567",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "18.5204"
+            },
+            {
+              "key": "longitude",
+              "value": "73.8567"
+            }
+          ]
+        },
+        "description": "Get all schools sorted by distance from Pune"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - From Mumbai",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/listSchools?latitude=19.0760&longitude=72.8777",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "19.0760"
+            },
+            {
+              "key": "longitude",
+              "value": "72.8777"
+            }
+          ]
+        },
+        "description": "Get all schools sorted by distance from Mumbai"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - From Delhi",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/listSchools?latitude=28.7041&longitude=77.1025",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["listSchools"],
+          "query": [
+            {
+              "key": "latitude",
+              "value": "28.7041"
+            },
+            {
+              "key": "longitude",
+              "value": "77.1025"
+            }
+          ]
+        },
+        "description": "Get all schools sorted by distance from Delhi"
+      },
+      "response": []
+    },
+    {
+      "name": "Add School - Invalid Name",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"\",\n  \"address\": \"Pune\",\n  \"latitude\": 18.5204,\n  \"longitude\": 73.8567\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/addSchool",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["addSchool"]
+        },
+        "description": "Test validation - Empty name should fail"
+      },
+      "response": []
+    },
+    {
+      "name": "Add School - Invalid Latitude",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Test School\",\n  \"address\": \"Pune\",\n  \"latitude\": 95,\n  \"longitude\": 73.8567\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5000/addSchool",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["addSchool"]
+        },
+        "description": "Test validation - Invalid latitude (out of range)"
+      },
+      "response": []
+    },
+    {
+      "name": "List Schools - Missing Parameters",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5000/listSchools",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["listSchools"]
+        },
+        "description": "Test validation - Missing latitude and longitude"
+      },
+      "response": []
+    }
+  ]
+}
