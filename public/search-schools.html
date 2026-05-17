@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Schools - School Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>🎓 School Management System</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/add-school.html">Add School</a>
+        <a href="/search-schools.html" class="active">Search Schools</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content">
+      <h2 style="color: #333; margin-bottom: 10px;">🔍 Search Schools</h2>
+      <p style="color: #666; margin-bottom: 30px;">Find schools near you sorted by distance.</p>
+
+      <!-- Alert Messages -->
+      <div id="infoAlert" class="alert alert-info"></div>
+      <div id="errorAlert" class="alert alert-error"></div>
+
+      <!-- Search Section -->
+      <div class="search-section">
+        <h2 style="color: #333; font-size: 18px; margin-bottom: 20px;">📍 Enter Your Location</h2>
+
+        <div class="location-input">
+          <input
+            type="number"
+            id="userLatitude"
+            placeholder="Enter latitude (e.g., 18.5204)"
+            step="0.0001"
+            min="-90"
+            max="90"
+          >
+          <input
+            type="number"
+            id="userLongitude"
+            placeholder="Enter longitude (e.g., 73.8567)"
+            step="0.0001"
+            min="-180"
+            max="180"
+          >
+          <button type="button" onclick="handleSearch()">🔍 Search</button>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+          <button type="button" onclick="getMyLocation()" class="btn">📍 Use My Location</button>
+          <button type="button" onclick="useExampleLocation()" class="btn" style="background: #764ba2;">📌 Use Example</button>
+        </div>
+
+        <p class="location-help">
+          Click "Use My Location" to automatically detect your current location or enter coordinates manually.
+        </p>
+      </div>
+
+      <!-- Loading -->
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p style="color: #666; margin-top: 15px;">Loading schools...</p>
+      </div>
+
+      <div id="schoolsContainer"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000';
+
+    function showAlert(type, message) {
+      const alertId = type === 'error' ? 'errorAlert' : 'infoAlert';
+      const alert = document.getElementById(alertId);
+      alert.textContent = message;
+      alert.classList.add('show');
+
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 5000);
+    }
+
+    function showLoading(show) {
+      document.getElementById('loading').classList.toggle('show', show);
+    }
+
+    function displayNoData() {
+      document.getElementById('schoolsContainer').innerHTML = `
+        <div class="no-data">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          <h3>❌ No Schools Found</h3>
+          <p>There are no schools in the database yet.</p>
+          <a href="/add-school.html" class="btn" style="display: inline-block; margin-top: 20px;">➕ Add First School</a>
+        </div>
+      `;
+    }
+
+    function displaySchools(schools) {
+      if (!schools || schools.length === 0) {
+        displayNoData();
+        return;
+      }
+
+      const html = `
+        <div class="schools-grid">
+          ${schools.map(school => `
+            <div class="school-card">
+              <h3>${school.name}</h3>
+              <p>📍 <strong>${school.address}</strong></p>
+              <p>🌍 Lat: ${school.latitude.toFixed(4)}</p>
+              <p>🌍 Lon: ${school.longitude.toFixed(4)}</p>
+              <div class="school-distance">📏 ${school.distance}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('schoolsContainer').innerHTML = html;
+    }
+
+    async function handleSearch() {
+      const latitude = document.getElementById('userLatitude').value;
+      const longitude = document.getElementById('userLongitude').value;
+
+      if (!latitude || !longitude) {
+        showAlert('error', '❌ Please enter latitude and longitude');
+        return;
+      }
+
+      const lat = parseFloat(latitude);
+      const lon = parseFloat(longitude);
+
+      if (lat < -90 || lat > 90 || lon < -180 || lon > 180) {
+        showAlert('error', '❌ Invalid coordinates. Latitude: -90 to 90, Longitude: -180 to 180');
+        return;
+      }
+
+      showLoading(true);
+
+      try {
+        const response = await fetch(
+          `${API_URL}/listSchools?latitude=${lat}&longitude=${lon}`
+        );
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message);
+        }
+
+        const schools = await response.json();Y
+        showLoading(false);
+
+        if (schools.length === 0) {
+          showAlert('info', 'No schools found. Be the first to add one!');
+        } else {
+          showAlert('info', `Found ${schools.length} school`);
+        }
+
+        displaySchools(schools);
+      } catch (error) {
+        showLoading(false);
+        showAlert('error', `❌ Error: ${error.message}`);
+      }
+    }
+
+    function getMyLocation() {
+      if (!navigator.geolocation) {
+        showAlert('error', '❌ Geolocation is not supported by your browser');
+        return;
+      }
+
+      showLoading(true);
+      showAlert('info', 'ℹ️ Getting your location...');
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          document.getElementById('userLatitude').value = latitude.toFixed(4);
+          document.getElementById('userLongitude').value = longitude.toFixed(4);
+          showLoading(false);
+          showAlert('info', `✅ Location found: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+        },
+        (error) => {
+          showLoading(false);
+          showAlert('error', `❌ Error: ${error.message}`);
+        }
+      );
+    }
+
+    function useExampleLocation() {
+      // Pune coordinates
+      document.getElementById('userLatitude').value = '18.5204';
+      document.getElementById('userLongitude').value = '73.8567';
+      showAlert('info', '📌 Using example location: Pune (18.5204, 73.8567)');
+    }
+
+    // Auto-search on page load if user has used geolocation before
+    window.addEventListener('load', () => {
+      showAlert('info', 'ℹ️ Enter your location or click "Use My Location" to find nearby schools');
+    });
+  </script>
+</body>
+</html>

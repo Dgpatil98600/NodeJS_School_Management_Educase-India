@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add School - School Management System</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>🎓 School Management System</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/add-school.html" class="active">Add School</a>
+        <a href="/search-schools.html">Search Schools</a>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="content">
+      <h2 style="color: #333; margin-bottom: 10px;">➕ Add New School</h2>
+      <p style="color: #666; margin-bottom: 30px;">Fill in the details below to add a new school to the database.</p>
+
+      <!-- Alert Messages -->
+      <div id="successAlert" class="alert alert-success"></div>
+      <div id="errorAlert" class="alert alert-error"></div>
+
+      <!-- Add School Form -->
+      <form id="addSchoolForm" onsubmit="handleAddSchool(event)">
+        <div class="form-group">
+          <label for="schoolName">School Name *</label>
+          <input
+            type="text"
+            id="schoolName"
+            placeholder="Enter school name (e.g., ABC School)"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="schoolAddress">Address *</label>
+          <input
+            type="text"
+            id="schoolAddress"
+            placeholder="Enter school address (e.g., Pune, Maharashtra)"
+            required
+          >
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="latitude">Latitude *</label>
+            <input
+              type="number"
+              id="latitude"
+              placeholder="18.5204"
+              step="0.0001"
+              min="-90"
+              max="90"
+              required
+            >
+            <small style="color: #999; font-size: 12px;">Range: -90 to 90</small>
+          </div>
+
+          <div class="form-group">
+            <label for="longitude">Longitude *</label>
+            <input
+              type="number"
+              id="longitude"
+              placeholder="73.8567"
+              step="0.0001"
+              min="-180"
+              max="180"
+              required
+            >
+            <small style="color: #999; font-size: 12px;">Range: -180 to 180</small>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">➕ Add School</button>
+      </form>
+
+      <!-- Info Box -->
+      <div style="margin-top: 40px; padding: 20px; background: #f0f4ff; border-radius: 8px; border-left: 4px solid #667eea;">
+        <h3 style="color: #667eea; margin-bottom: 15px;">📍 How to Find Coordinates</h3>
+        <p style="color: #666; margin-bottom: 10px;"><strong>Method 1: Google Maps</strong></p>
+        <ul style="color: #666; margin-bottom: 15px; padding-left: 20px;">
+          <li>Open Google Maps</li>
+          <li>Search for the school</li>
+          <li>Right-click on the location</li>
+          <li>Copy the coordinates (latitude, longitude)</li>
+        </ul>
+
+        <p style="color: #666; margin-bottom: 10px;"><strong>Method 2: Current Location</strong></p>
+        <ul style="color: #666; padding-left: 20px;">
+          <li>Go to Search Schools page</li>
+          <li>Click "Use My Location" button</li>
+          <li>Your coordinates will be displayed</li>
+        </ul>
+
+        <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 5px;">
+          <p style="color: #333; margin-bottom: 5px;"><strong>Example Coordinates:</strong></p>
+          <p style="color: #666; font-size: 13px;">
+            Pune: 18.5204, 73.8567<br>
+            Mumbai: 19.0760, 72.8777<br>
+            Delhi: 28.7041, 77.1025
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5000';
+
+    function showAlert(type, message) {
+      const alertId = type === 'success' ? 'successAlert' : 'errorAlert';
+      const alert = document.getElementById(alertId);
+      alert.textContent = message;
+      alert.classList.add('show');
+
+      setTimeout(() => {
+        alert.classList.remove('show');
+      }, 4000);
+    }
+
+    async function handleAddSchool(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('schoolName').value.trim();
+      const address = document.getElementById('schoolAddress').value.trim();
+      const latitude = parseFloat(document.getElementById('latitude').value);
+      const longitude = parseFloat(document.getElementById('longitude').value);
+
+      // Validation
+      if (!name || !address || isNaN(latitude) || isNaN(longitude)) {
+        showAlert('error', '❌ Please fill in all fields correctly');
+        return;
+      }
+
+      if (latitude < -90 || latitude > 90) {
+        showAlert('error', '❌ Latitude must be between -90 and 90');
+        return;
+      }
+
+      if (longitude < -180 || longitude > 180) {
+        showAlert('error', '❌ Longitude must be between -180 and 180');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_URL}/addSchool`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            address,
+            latitude,
+            longitude
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showAlert('success', `${data.message}`);
+          document.getElementById('addSchoolForm').reset();
+
+          // Redirect after 2 seconds
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        } else {
+          showAlert('error', `❌ ${data.message}`);
+        }
+      } catch (error) {
+        showAlert('error', `❌ Error: ${error.message}`);
+      }
+    }
+  </script>
+</body>
+</html>
