@@ -46,7 +46,6 @@ export const listSchools = async (req, res, next) => {
     const [schools] = await connection.execute(query);
     connection.release();
 
-    // Calculate distance for each school and add to response
     const schoolsWithDistance = schools.map(school => ({
       ...school,
       distance: `${calculateDistance(userLat, userLon, school.latitude, school.longitude)} km`

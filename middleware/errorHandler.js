@@ -17,7 +17,7 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Default internal server error
+  // internal server error
   res.status(500).json({
     success: false,
     message: 'Internal server error',

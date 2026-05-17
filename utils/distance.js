@@ -1,4 +1,3 @@
-// Haversine Formula for calculating distance between two coordinates
 export const calculateDistance = (lat1, lon1, lat2, lon2) => {
   const R = 6371; // Earth's radius in kilometers
   const dLat = (lat2 - lat1) * (Math.PI / 180);

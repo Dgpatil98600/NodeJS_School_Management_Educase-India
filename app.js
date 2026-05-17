@@ -29,10 +29,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// Routes
 app.use('/', schoolRoutes);
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -40,10 +38,8 @@ app.use((req, res) => {
   });
 });
 
-// Error handling middleware
 app.use(errorHandler);
 
-// Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

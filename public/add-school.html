@@ -8,7 +8,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <header>
       <h1>🎓 School Management System</h1>
       <nav>
@@ -18,16 +17,13 @@
       </nav>
     </header>
 
-    <!-- Main Content -->
     <div class="content">
       <h2 style="color: #333; margin-bottom: 10px;">➕ Add New School</h2>
       <p style="color: #666; margin-bottom: 30px;">Fill in the details below to add a new school to the database.</p>
 
-      <!-- Alert Messages -->
       <div id="successAlert" class="alert alert-success"></div>
       <div id="errorAlert" class="alert alert-error"></div>
 
-      <!-- Add School Form -->
       <form id="addSchoolForm" onsubmit="handleAddSchool(event)">
         <div class="form-group">
           <label for="schoolName">School Name *</label>
@@ -82,7 +78,6 @@
         <button type="submit" class="btn-submit">➕ Add School</button>
       </form>
 
-      <!-- Info Box -->
       <div style="margin-top: 40px; padding: 20px; background: #f0f4ff; border-radius: 8px; border-left: 4px solid #667eea;">
         <h3 style="color: #667eea; margin-bottom: 15px;">📍 How to Find Coordinates</h3>
         <p style="color: #666; margin-bottom: 10px;"><strong>Method 1: Google Maps</strong></p>
@@ -113,7 +108,7 @@
   </div>
 
   <script>
-    const API_URL = 'http://localhost:8000';
+    const API_URL = 'https://school-management-api-0se7.onrender.com';
 
     function showAlert(type, message) {
       const alertId = type === 'success' ? 'successAlert' : 'errorAlert';
@@ -170,7 +165,6 @@
           showAlert('success', `${data.message}`);
           document.getElementById('addSchoolForm').reset();
 
-          // Redirect after 2 seconds
           setTimeout(() => {
             window.location.href = '/';
           }, 2000);
